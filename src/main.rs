@@ -2,8 +2,8 @@
 // use std::ops::Not;
 // use carapax::types::User;
 use carapax::types::{
-    Message, Text, 
-    // KeyboardButton, InlineKeyboardButton, InputFile, MessageData, TextEntity
+    Message,  
+    // Text, KeyboardButton, InlineKeyboardButton, InputFile, MessageData, TextEntity
 };
 use carapax::{
     longpoll::LongPoll,
@@ -37,9 +37,11 @@ async fn main() {
 async fn echo(api: Ref<Api>, chat_id: ChatId, message: Message) -> Result<(), ExecuteError> {
     let content = message.get_text().unwrap();
     let string_slice = &content.data[..=5];
+    let second_part = &content.data[6..];
     match string_slice {
         "/start" => api.execute(SendMessage::new(chat_id.clone(), "Received /start")).await?,
         "/dbadd" => api.execute(SendMessage::new(chat_id.clone(), "Received /dbadd")).await?,
+        "/print" => api.execute(SendMessage::new(chat_id.clone(), second_part)).await?,
         _ => api.execute(SendMessage::new(chat_id.clone(), "Error")).await?,
     };
     Ok(())
