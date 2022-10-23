@@ -18,6 +18,12 @@ use dotenv::dotenv;
 // use serde::ser::Error;
 // use serde::{Deserialize, Serialize};
 use std::env;
+use postgres::{Client, NoTls, Error};
+
+struct Sorted {
+    item: String,
+    price: i64,
+}
 
 #[tokio::main]
 async fn main() {
@@ -41,13 +47,40 @@ async fn echo(api: Ref<Api>, chat_id: ChatId, message: Message) -> Result<(), Ex
     match string_slice {
         "/start" => api.execute(SendMessage::new(chat_id.clone(), "Received /start")).await?,
         "/dbadd" => api.execute(SendMessage::new(chat_id.clone(), "Received /dbadd")).await?,
-        "/print" => api.execute(SendMessage::new(chat_id.clone(), some(second_part))).await?,
+        "/print" => api.execute(
+            SendMessage::new(
+                chat_id.clone(), format!("{:?}", sorted(second_part)
+                )
+            )).await?,
         _ => api.execute(SendMessage::new(chat_id.clone(), "Error")).await?,
     };
     Ok(())
 }
 
-fn some(slice: &str) -> String {
-    // "fn some".to_string()
-    format!("fn some: {}", slice)
+// fn some(slice: &str) -> String {
+//     // "fn some".to_string()
+//     format!("fn some: {}", slice)
+// }
+
+fn sorted(slice: &str) -> Result<(), Error> {
+    let mut client = Client::connect(
+        "postgresql://dboperator:operatorpass123@localhost:5243/postgres", NoTls
+    )?;
+    
+    for row in client.query 
+    ("SELECT item, COUNT(item) AS goods 
+    FROM b_store GROUP BY id ORDER BY goods DESC", &[])? {
+        let (item, price): (Option<String>, Option<i64>) = (row.get(0), row.get(1));
+        
+        if item.is_some() && price.is_some() {
+            let sorted_db = Sorted {
+                item: item.unwrap(),
+                price: price.unwrap(),
+        };
+            println!("{} {}", sorted_db.item, sorted_db.price);
+            
+        }
+    }
+    
+    Ok(())
 }
