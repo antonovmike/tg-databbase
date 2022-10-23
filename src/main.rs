@@ -41,8 +41,13 @@ async fn echo(api: Ref<Api>, chat_id: ChatId, message: Message) -> Result<(), Ex
     match string_slice {
         "/start" => api.execute(SendMessage::new(chat_id.clone(), "Received /start")).await?,
         "/dbadd" => api.execute(SendMessage::new(chat_id.clone(), "Received /dbadd")).await?,
-        "/print" => api.execute(SendMessage::new(chat_id.clone(), second_part)).await?,
+        "/print" => api.execute(SendMessage::new(chat_id.clone(), some(second_part))).await?,
         _ => api.execute(SendMessage::new(chat_id.clone(), "Error")).await?,
     };
     Ok(())
+}
+
+fn some(slice: &str) -> String {
+    // "fn some".to_string()
+    format!("fn some: {}", slice)
 }
