@@ -1,29 +1,19 @@
 // #![allow(unused)]
-// use std::ops::Not;
-// use carapax::types::User;
-use carapax::types::{
-    Message,  
-    // Text, KeyboardButton, InlineKeyboardButton, InputFile, MessageData, TextEntity
-};
+use carapax::types::Message;
 use carapax::{
     longpoll::LongPoll,
     methods::SendMessage,
-    types::{
-        ChatId, 
-        // Text, Update
-    },
+    types::ChatId, 
     Api, App, Context, ExecuteError, Ref,
 };
 use dotenv::dotenv;
-// use serde::ser::Error;
-// use serde::{Deserialize, Serialize};
 use std::env;
-use postgres::{Client, NoTls, Error};
+// use postgres::{Client, NoTls, Error};
 
-struct Sorted {
-    item: String,
-    price: i64,
-}
+// struct Sorted {
+//     item: String,
+//     price: i64,
+// }
 
 #[tokio::main]
 async fn main() {
@@ -58,6 +48,28 @@ async fn echo(api: Ref<Api>, chat_id: ChatId, message: Message) -> Result<(), Ex
 }
 
 fn some(slice: &str) -> String {
-    // "fn some".to_string()
     format!("fn some: {}", slice)
 }
+
+// fn sorted() -> Result<(), Error> {
+//     let mut client = Client::connect(
+//         "postgresql://dboperator:operatorpass123@localhost:5243/postgres", NoTls
+//     )?;
+    
+//     for row in client.query 
+//     ("SELECT item, COUNT(item) AS goods 
+//     FROM b_store GROUP BY id ORDER BY goods DESC", &[])? {
+//         let (item, price): (Option<String>, Option<i64>) = (row.get(0), row.get(1));
+        
+//         if item.is_some() && price.is_some() {
+//             let sorted_db = Sorted {
+//                 item: item.unwrap(),
+//                 price: price.unwrap(),
+//         };
+//             println!("{} {}", sorted_db.item, sorted_db.price);
+            
+//         }
+//     }
+        
+//     Ok(())
+// }
